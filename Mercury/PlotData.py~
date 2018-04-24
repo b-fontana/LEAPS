@@ -1,0 +1,20 @@
+import matplotlib.pyplot as plt
+import numpy as np
+
+###########################
+##Read Files###############
+###########################
+from os import walk
+files_aux = []
+for (dirpath, dirnames, filenames) in walk("."):
+    files_aux.extend(filenames)
+    break
+files = [x for x in files_aux if ".aei" in x]
+
+lines=[]
+for i in files:
+    f = open(i, 'r')
+    lines.append(f.readlines())
+    f.close()
+
+print(lines[0])
