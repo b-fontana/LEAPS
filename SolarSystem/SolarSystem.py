@@ -13,8 +13,8 @@ f=open("PlanetProperties.dat",'r')
 import rebound
 sim = rebound.Simulation()
 sim.units = ('AU', 'days', 'Msun')
-all_labels=["Sun","Mercury","Venus","Earth","Mars","Jupiter","Saturn","Uranus","Neptun","Pluto"]
-labels=["Sun","Jupiter","Saturn","Uranus","Neptun","Pluto"]
+all_labels=["Sun","Mercury","Venus","Earth","Mars","Jupiter","Saturn","Uranus","Neptune","Pluto"]
+labels=["Sun","Jupiter","Saturn","Uranus","Neptune","Pluto"]
 Nplanets=len(labels)-1
 """
 for iObject in range(len(all_labels)):
@@ -65,8 +65,10 @@ for i,time in enumerate(times):
         longitude[j][i]=orbits[j].l
         varpi[j][i]=orbits[j].Omega+orbits[j].omega
 
-thetaJupSat=[RadianToDegree(3*longitude[1][i]-longitude[0][i]-2*varpi[0][i]) for i in range(Nout)]
+thetaJupSat=[RadianToDegree(5*longitude[1][i]-longitude[0][i]-1.5*varpi[0][i]) for i in range(Nout)]
 pheriheliondiffJupSat=[RadianToDegree(-varpi[1][i]+varpi[0][i]) for i in range(Nout)]
+thetaSatUra=[RadianToDegree(3*longitude[2][i]-longitude[1][i]-2*varpi[1][i]) for i in range(Nout)]
+pheriheliondiffSatUra=[RadianToDegree(-varpi[2][i]+varpi[1][i]) for i in range(Nout)]
 thetaUraNep=[RadianToDegree(2*longitude[3][i]-longitude[2][i]-varpi[2][i]) for i in range(Nout)]
 pheriheliondiffUraNep=[RadianToDegree(-varpi[3][i]+varpi[2][i]) for i in range(Nout)]
 thetaNepPlu=[RadianToDegree(1.5*longitude[4][i]-longitude[3][i]-0.5*varpi[4][i]) for i in range(Nout)]
@@ -75,7 +77,7 @@ pheriheliondiffNepPlu=[RadianToDegree(-varpi[4][i]+varpi[3][i]) for i in range(N
 #######################################
 ##Plot the values as a function of time
 #######################################
-#Jupiter-Saturn 3:1 resonance
+#Jupiter-Saturn 5:2 resonance
 fig = plt.figure(figsize=(9,5))
 ax = plt.subplot(211)
 for i in range(Nplanets):
@@ -87,10 +89,26 @@ ax = plt.subplot(212)
 plt.plot(times,thetaJupSat,label="Resonant argument")
 plt.plot(times,pheriheliondiffJupSat,label="Secular resonant argument")
 ax.set_xlabel("Time (days)")
-ax.set_ylabel("Resonant Argument (1:3)")
+ax.set_ylabel("Resonant Argument (2:5)")
 ax.set_ylim([-180.,180.])
 plt.legend();
 fig.savefig("SolarSystem_JupSatLibration.png")
+
+fig = plt.figure(figsize=(9,5))
+ax = plt.subplot(211)
+for i in range(Nplanets):
+    plt.plot(times,x[i],label=labels[i+1])
+ax.set_xlabel("")
+ax.set_ylabel("Distance to the c.o.m. (AU)")
+plt.legend();
+ax = plt.subplot(212)
+plt.plot(times,thetaSatUra,label="Resonant argument")
+plt.plot(times,pheriheliondiffSatUra,label="Secular resonant argument")
+ax.set_xlabel("Time (days)")
+ax.set_ylabel("Resonant Argument (1:3)")
+ax.set_ylim([-180.,180.])
+plt.legend();
+fig.savefig("SolarSystem_SatUraLibration.png")
 
 fig = plt.figure(figsize=(9,5))
 ax = plt.subplot(211)

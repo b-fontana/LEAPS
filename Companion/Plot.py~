@@ -1,0 +1,63 @@
+import numpy as np
+
+def file_len(fname):
+    with open(fname) as f:
+        for i, l in enumerate(f):
+            pass
+    return i + 1
+
+######################################
+##Read data files#####################
+######################################
+filename="saved_data.data"
+myfile=open(filename,"r")
+file_length = file_len(filename)
+
+times=[float((myfile.readline()).split()[0]) for x in range(file_length)]
+myfile.seek(0)
+ecc=[]
+for i in range(2):
+    ecc.append([float(myfile.readline().split()[1+i]) for x in range(file_length)])
+    myfile.seek(0)
+inc=[]
+for i in range(2):
+    inc.append([float(myfile.readline().split()[3+i]) for x in range(file_length)])
+    myfile.seek(0)
+    
+######################################
+##Plot and save data##################
+######################################
+times_in_My = [x/365.25/1.0e6 for x in times]
+
+from matplotlib import gridspec
+import matplotlib.pyplot as plt
+
+gs1 = gridspec.GridSpec(9, 1) #grid above which the pictures will be placed
+gs1.update(left=0.05, right=0.95)
+fig = plt.figure(figsize=(15,10))
+
+ax1 = plt.subplot(gs1[0:2,0],xticklabels=[])
+plt.plot(times_in_My,ecc[0],label="Jupiter")
+ax1.set_xlabel("")
+plt.legend();
+ax2 = plt.subplot(gs1[2:4,0])
+plt.plot(times_in_My,ecc[1],label="Companion")
+ax2.set_xlabel("Time (My)",fontsize=12)
+ax2.xaxis.set_tick_params(labelsize=10)
+ax2.yaxis.set_tick_params(labelsize=10)
+plt.legend();
+fig.text(-0.035, 0.72, 'Eccentricity', va='center', rotation='vertical', fontsize=12)
+
+ax3 = plt.subplot(gs1[5:7,0],xticklabels=[])
+plt.plot(times_in_My,inc[0],label="Jupiter")
+ax3.set_xlabel("")
+plt.legend();
+ax4 = plt.subplot(gs1[7:9,0])
+plt.plot(times_in_My,inc[1],label="Companion")
+ax4.set_xlabel("Time (My)",fontsize=12)
+ax4.xaxis.set_tick_params(labelsize=10)
+ax4.yaxis.set_tick_params(labelsize=10)
+plt.legend();
+fig.text(-0.035, 0.28, 'Inclination', va='center', rotation='vertical', fontsize=12)
+
+fig.savefig("Companion_ecc+inc.png", bbox_inches = 'tight')
